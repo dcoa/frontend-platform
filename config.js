@@ -66,7 +66,7 @@ var config = {
   LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL,
   LOGO_WHITE_URL: process.env.LOGO_WHITE_URL,
   FAVICON_URL: process.env.FAVICON_URL,
-  MULTITENANT_API: true
+  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL
 };
 /**
  * Getter for the application configuration document.  This is synchronous and merely returns a

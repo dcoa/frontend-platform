@@ -26,7 +26,7 @@ function _getHttpConfig() {
 
           case 2:
             apiService = _context.sent;
-            url = getConfig().ENVIRONMENT == "development" ? "http://".concat(LMS_BASE_URL, ":8000/eox-tenant/api/v1/mfe-api/") : "https://".concat(LMS_BASE_URL, "eox-tenant/api/v1/mfe-api/").concat(LMS_BASE_URL);
+            url = MFE_CONFIG_API_URL;
             _context.next = 6;
             return apiService.get(url, apiConfig);
 

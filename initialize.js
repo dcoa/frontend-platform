@@ -357,7 +357,7 @@ function _initialize() {
           case 5:
             publish(APP_PUBSUB_INITIALIZED); // Configuration
 
-            if (!getConfig().MULTITENANT_API) {
+            if (!getConfig().MFE_CONFIG_API_URL) {
               _context6.next = 11;
               break;
             }
