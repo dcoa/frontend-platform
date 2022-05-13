@@ -4,7 +4,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 import configureCache from "../auth/LocalForageCache";
 import { getConfig } from "../config";
-var apiConfig = {
+var capiConfig = {
   headers: {
     accept: 'application/json'
   }
@@ -26,9 +26,9 @@ function _getHttpConfig() {
 
           case 2:
             apiService = _context.sent;
-            url = MFE_CONFIG_API_URL;
+            url = getConfig().MFE_CONFIG_API_URL;
             _context.next = 6;
-            return apiService.get(url, apiConfig);
+            return apiService.get(url, capiConfig);
 
           case 6:
             _yield$apiService$get = _context.sent;
