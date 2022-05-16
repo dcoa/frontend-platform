@@ -28,13 +28,11 @@ function _getHttpConfig() {
             apiService = _context.sent;
             url = getConfig().MFE_CONFIG_API_URL;
             _context.next = 6;
-            console.log('MFE_CONFIG_API_URL', url)
             return apiService.get(url, capiConfig);
 
           case 6:
             _yield$apiService$get = _context.sent;
             data = _yield$apiService$get.data;
-            console.log('API RETURN', data)
             return _context.abrupt("return", data);
 
           case 9:

@@ -193,5 +193,6 @@ export function ensureConfig(keys) {
  * @property {string} LOGO_TRADEMARK_URL
  * @property {string} LOGO_WHITE_URL
  * @property {string} FAVICON_URL
+ * @property {string} MFE_CONFIG_API_URL
  */
 //# sourceMappingURL=config.js.map

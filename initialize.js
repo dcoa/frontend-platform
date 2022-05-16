@@ -194,16 +194,17 @@ function _configTenant() {
               document.querySelector('link[rel="shortcut icon"]').href = data.common.FAVICON_URL;
             }
 
+            console.log(data);
             mfeRef = window.location.pathname.split('/')[1];
             additionalConfig = data[mfeRef] ? data[mfeRef] : null;
             mergeConfig(_objectSpread(_objectSpread({
               BASE_URL: "".concat(window.location.host).concat(mfeRef && '/' + mfeRef)
             }, data === null || data === void 0 ? void 0 : data.common), additionalConfig));
-            _context4.next = 14;
+            _context4.next = 15;
             break;
 
-          case 11:
-            _context4.prev = 11;
+          case 12:
+            _context4.prev = 12;
             _context4.t0 = _context4["catch"](0);
             // This is an option set some basic values an display the error page with the default message
             // or we can redirect the user with history.goBack()
@@ -212,12 +213,12 @@ function _configTenant() {
               LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
             });
 
-          case 14:
+          case 15:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 11]]);
+    }, _callee4, null, [[0, 12]]);
   }));
   return _configTenant.apply(this, arguments);
 }
@@ -374,25 +375,26 @@ function _initialize() {
             return handlers.config();
 
           case 13:
+            console.log(getConfig());
             publish(APP_CONFIG_INITIALIZED); // Logging
 
             configureLogging(loggingService, {
               config: getConfig()
             });
-            _context6.next = 17;
+            _context6.next = 18;
             return handlers.logging();
 
-          case 17:
+          case 18:
             publish(APP_LOGGING_INITIALIZED); // Authentication
 
             configureAuth(authService, {
               loggingService: getLoggingService(),
               config: getConfig()
             });
-            _context6.next = 21;
+            _context6.next = 22;
             return handlers.auth(requireUser, hydrateUser);
 
-          case 21:
+          case 22:
             publish(APP_AUTH_INITIALIZED); // Analytics
 
             configureAnalytics(analyticsService, {
@@ -400,10 +402,10 @@ function _initialize() {
               loggingService: getLoggingService(),
               httpClient: getAuthenticatedHttpClient()
             });
-            _context6.next = 25;
+            _context6.next = 26;
             return handlers.analytics();
 
-          case 25:
+          case 26:
             publish(APP_ANALYTICS_INITIALIZED); // Internationalization
 
             configureI18n({
@@ -411,41 +413,41 @@ function _initialize() {
               config: getConfig(),
               loggingService: getLoggingService()
             });
-            _context6.next = 29;
+            _context6.next = 30;
             return handlers.i18n();
 
-          case 29:
+          case 30:
             publish(APP_I18N_INITIALIZED); // Application Ready
 
-            _context6.next = 32;
+            _context6.next = 33;
             return handlers.ready();
 
-          case 32:
+          case 33:
             publish(APP_READY);
-            _context6.next = 41;
+            _context6.next = 42;
             break;
 
-          case 35:
-            _context6.prev = 35;
+          case 36:
+            _context6.prev = 36;
             _context6.t0 = _context6["catch"](2);
 
             if (_context6.t0.isRedirecting) {
-              _context6.next = 41;
+              _context6.next = 42;
               break;
             }
 
-            _context6.next = 40;
+            _context6.next = 41;
             return handlers.initError(_context6.t0);
 
-          case 40:
+          case 41:
             publish(APP_INIT_ERROR, _context6.t0);
 
-          case 41:
+          case 42:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[2, 35]]);
+    }, _callee6, null, [[2, 36]]);
   }));
   return _initialize.apply(this, arguments);
 }
