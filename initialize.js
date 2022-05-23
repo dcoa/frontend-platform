@@ -57,13 +57,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { publish } from './pubSub'; // eslint-disable-next-line import/no-cycle
 
-import { getConfig, setConfig, mergeConfig } from './config';
+import { getConfig, setConfigByApi } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
 import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
-import { getHttpConfig } from './initialize/data';
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
@@ -121,6 +120,9 @@ function _initError() {
 export function auth(_x2, _x3) {
   return _auth.apply(this, arguments);
 }
+/*
+ * Make a runtime site configuration
+ */
 
 function _auth() {
   _auth = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(requireUser, hydrateUser) {
@@ -162,8 +164,8 @@ function _auth() {
   return _auth.apply(this, arguments);
 }
 
-export function configTenant() {
-  return _configTenant.apply(this, arguments);
+export function runtimeConfig() {
+  return _runtimeConfig.apply(this, arguments);
 }
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
@@ -174,53 +176,23 @@ export function configTenant() {
  *
  */
 
-function _configTenant() {
-  _configTenant = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var _data$common, tenant, data, mfeRef, additionalConfig;
-
+function _runtimeConfig() {
+  _runtimeConfig = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _context4.prev = 0;
-            tenant = window.location.hostname;
-            _context4.next = 4;
-            return getHttpConfig(tenant);
+            _context4.next = 2;
+            return setConfigByApi();
 
-          case 4:
-            data = _context4.sent;
-
-            if (document.querySelector('link[rel="shortcut icon"]') && (_data$common = data.common) !== null && _data$common !== void 0 && _data$common.FAVICON_URL) {
-              document.querySelector('link[rel="shortcut icon"]').href = data.common.FAVICON_URL;
-            }
-
-            console.log(data);
-            mfeRef = window.location.pathname.split('/')[1];
-            additionalConfig = data[mfeRef] ? data[mfeRef] : null;
-            mergeConfig(_objectSpread(_objectSpread({
-              BASE_URL: "".concat(window.location.host).concat(mfeRef && '/' + mfeRef)
-            }, data === null || data === void 0 ? void 0 : data.common), additionalConfig));
-            _context4.next = 15;
-            break;
-
-          case 12:
-            _context4.prev = 12;
-            _context4.t0 = _context4["catch"](0);
-            // This is an option set some basic values an display the error page with the default message
-            // or we can redirect the user with history.goBack()
-            setConfig({
-              BASE_URL: "".concat(window.location.host),
-              LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
-            });
-
-          case 15:
+          case 2:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 12]]);
+    }, _callee4);
   }));
-  return _configTenant.apply(this, arguments);
+  return _runtimeConfig.apply(this, arguments);
 }
 
 export function analytics() {
@@ -280,7 +252,7 @@ function applyOverrideHandlers(overrides) {
 
   return _objectSpread({
     pubSub: noOp,
-    configTenant: configTenant,
+    runtimeConfig: runtimeConfig,
     config: noOp,
     logging: noOp,
     auth: auth,
@@ -364,7 +336,7 @@ function _initialize() {
             }
 
             _context6.next = 9;
-            return handlers.configTenant();
+            return handlers.runtimeConfig();
 
           case 9:
             _context6.next = 13;
@@ -375,26 +347,25 @@ function _initialize() {
             return handlers.config();
 
           case 13:
-            console.log(getConfig());
             publish(APP_CONFIG_INITIALIZED); // Logging
 
             configureLogging(loggingService, {
               config: getConfig()
             });
-            _context6.next = 18;
+            _context6.next = 17;
             return handlers.logging();
 
-          case 18:
+          case 17:
             publish(APP_LOGGING_INITIALIZED); // Authentication
 
             configureAuth(authService, {
               loggingService: getLoggingService(),
               config: getConfig()
             });
-            _context6.next = 22;
+            _context6.next = 21;
             return handlers.auth(requireUser, hydrateUser);
 
-          case 22:
+          case 21:
             publish(APP_AUTH_INITIALIZED); // Analytics
 
             configureAnalytics(analyticsService, {
@@ -402,10 +373,10 @@ function _initialize() {
               loggingService: getLoggingService(),
               httpClient: getAuthenticatedHttpClient()
             });
-            _context6.next = 26;
+            _context6.next = 25;
             return handlers.analytics();
 
-          case 26:
+          case 25:
             publish(APP_ANALYTICS_INITIALIZED); // Internationalization
 
             configureI18n({
@@ -413,41 +384,41 @@ function _initialize() {
               config: getConfig(),
               loggingService: getLoggingService()
             });
-            _context6.next = 30;
+            _context6.next = 29;
             return handlers.i18n();
 
-          case 30:
+          case 29:
             publish(APP_I18N_INITIALIZED); // Application Ready
 
-            _context6.next = 33;
+            _context6.next = 32;
             return handlers.ready();
 
-          case 33:
+          case 32:
             publish(APP_READY);
-            _context6.next = 42;
+            _context6.next = 41;
             break;
 
-          case 36:
-            _context6.prev = 36;
+          case 35:
+            _context6.prev = 35;
             _context6.t0 = _context6["catch"](2);
 
             if (_context6.t0.isRedirecting) {
-              _context6.next = 42;
+              _context6.next = 41;
               break;
             }
 
-            _context6.next = 41;
+            _context6.next = 40;
             return handlers.initError(_context6.t0);
 
-          case 41:
+          case 40:
             publish(APP_INIT_ERROR, _context6.t0);
 
-          case 42:
+          case 41:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[2, 36]]);
+    }, _callee6, null, [[2, 35]]);
   }));
   return _initialize.apply(this, arguments);
 }
