@@ -24,6 +24,7 @@
  * @module Config
  */
 
+import configureCache from './auth/LocalForageCache';
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 
 import { publish, subscribe } from './pubSub';
@@ -67,6 +68,7 @@ let config = {
   LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL,
   LOGO_WHITE_URL: process.env.LOGO_WHITE_URL,
   FAVICON_URL: process.env.FAVICON_URL,
+  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
 };
 
 /**
@@ -112,6 +114,27 @@ export function mergeConfig(newConfig) {
   ensureDefinedConfig(newConfig, 'ProcessEnvConfigService');
   config = Object.assign(config, newConfig);
   publish(CONFIG_CHANGED);
+}
+
+/**
+ * Set or overrides configuration through an API. This method allows runtime configuration.
+ * Set a basic configuration when an error happen.
+ */
+export async function setConfigByApi() {
+  const apiConfig = { headers: { accept: 'application/json' } };
+  try {
+    const apiService = await configureCache();
+    const url = getConfig().MFE_CONFIG_API_URL;
+    const { data } = await apiService.get(url, apiConfig);
+    mergeConfig(data);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error with config API', error.message);
+    setConfig({
+      BASE_URL: `${window.location.host}`,
+      LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference',
+    });
+  }
 }
 
 /**
@@ -193,4 +216,5 @@ export function ensureConfig(keys, requester = 'unspecified application code') {
  * @property {string} LOGO_TRADEMARK_URL
  * @property {string} LOGO_WHITE_URL
  * @property {string} FAVICON_URL
+ * @property {string} MFE_CONFIG_API_URL
  */

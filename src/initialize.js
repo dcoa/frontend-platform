@@ -50,7 +50,7 @@ import {
   publish,
 } from './pubSub';
 // eslint-disable-next-line import/no-cycle
-import { getConfig } from './config';
+import { getConfig, setConfigByApi } from './config';
 import {
   configure as configureLogging, getLoggingService, NewRelicLoggingService, logError,
 } from './logging';
@@ -128,6 +128,13 @@ export async function auth(requireUser, hydrateUser) {
   }
 }
 
+/*
+ * Make a runtime site configuration
+ */
+
+export async function runtimeConfig() {
+  await setConfigByApi();
+}
 /**
  * The default handler for the initialization lifecycle's `analytics` phase.
  *
@@ -149,6 +156,7 @@ function applyOverrideHandlers(overrides) {
   const noOp = async () => { };
   return {
     pubSub: noOp,
+    runtimeConfig,
     config: noOp,
     logging: noOp,
     auth,
@@ -221,7 +229,7 @@ export async function initialize({
     publish(APP_PUBSUB_INITIALIZED);
 
     // Configuration
-    await handlers.config();
+    if (getConfig().MFE_CONFIG_API_URL) { await handlers.runtimeConfig(); } else { await handlers.config(); }
     publish(APP_CONFIG_INITIALIZED);
 
     // Logging
