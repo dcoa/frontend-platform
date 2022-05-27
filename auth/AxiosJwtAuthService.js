@@ -84,20 +84,45 @@ var AxiosJwtAuthService = /*#__PURE__*/function () {
       _this.cachedHttpClient = _this.httpClient;
       logFrontendAuthError(_this.loggingService, "configureCache failed with error: ".concat(e.message));
     });
+    this.middleware = options.middleware;
+    this.applyMiddleware(options.middleware);
   }
   /**
-   * Gets the authenticated HTTP client for the service.  This is an axios instance.
+   * Applies middleware to the axios instances in this service.
    *
-   * @param {Object} [options] Optional options for how the HTTP client should be configured.
-   * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
-   * with the returned client.
-   *
-   * @returns {HttpClient} A configured axios http client which can be used for authenticated
-   * requests.
+   * @param {Array} middleware Middleware to apply.
    */
 
 
   _createClass(AxiosJwtAuthService, [{
+    key: "applyMiddleware",
+    value: function applyMiddleware() {
+      var middleware = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var clients = [this.authenticatedHttpClient, this.httpClient, this.cachedAuthenticatedHttpClient, this.cachedHttpClient];
+
+      try {
+        middleware.forEach(function (middlewareFn) {
+          clients.forEach(function (client) {
+            return client && middlewareFn(client);
+          });
+        });
+      } catch (error) {
+        logFrontendAuthError(this.loggingService, error);
+        throw error;
+      }
+    }
+    /**
+     * Gets the authenticated HTTP client for the service.  This is an axios instance.
+     *
+     * @param {Object} [options] Optional options for how the HTTP client should be configured.
+     * @param {boolean} [options.useCache] Whether to use front end caching for all requests made
+     * with the returned client.
+     *
+     * @returns {HttpClient} A configured axios http client which can be used for authenticated
+     * requests.
+     */
+
+  }, {
     key: "getAuthenticatedHttpClient",
     value: function getAuthenticatedHttpClient() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};

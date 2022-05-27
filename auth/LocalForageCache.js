@@ -18,13 +18,13 @@ export default function configureCache() {
 }
 
 function _configureCache() {
-  _configureCache = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+  _configureCache = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
     var forageStore;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
-            _context.next = 2;
+            _context2.next = 2;
             return localforage.defineDriver(memoryDriver);
 
           case 2:
@@ -35,22 +35,50 @@ function _configureCache() {
               name: 'edx-cache'
             }); // Set up the cache with a default maxAge of 5 minutes and using localforage as the storage source
 
-            return _context.abrupt("return", setup({
+            return _context2.abrupt("return", setup({
               cache: {
                 maxAge: 5 * 60 * 1000,
                 store: forageStore,
                 exclude: {
                   query: false
-                }
+                },
+                invalidate: function () {
+                  var _invalidate = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(config, request) {
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            if (!request.clearCacheEntry) {
+                              _context.next = 3;
+                              break;
+                            }
+
+                            _context.next = 3;
+                            return config.store.removeItem(config.uuid);
+
+                          case 3:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+
+                  function invalidate(_x, _x2) {
+                    return _invalidate.apply(this, arguments);
+                  }
+
+                  return invalidate;
+                }()
               }
             }));
 
           case 4:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
   return _configureCache.apply(this, arguments);
 }

@@ -1,7 +1,3 @@
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 /**
  * #### Import members from **@edx/frontend-platform**
  *
@@ -27,7 +23,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  *
  * @module Config
  */
-import configureCache from './auth/LocalForageCache';
 import { APP_CONFIG_INITIALIZED, CONFIG_CHANGED } from './constants';
 import { publish, subscribe } from './pubSub';
 import { ensureDefinedConfig } from './utils';
@@ -119,14 +114,6 @@ export function mergeConfig(newConfig) {
   publish(CONFIG_CHANGED);
 }
 /**
- * Set or overrides configuration through an API. This method allows runtime configuration.
- * Set a basic configuration when an error happen.
- */
-
-export function setConfigByApi() {
-  return _setConfigByApi.apply(this, arguments);
-}
-/**
  * A method allowing application code to indicate that particular ConfigDocument keys are required
  * for them to function.  This is useful for diagnosing development/deployment issues, primarily,
  * by surfacing misconfigurations early.  For instance, if the build process fails to supply an
@@ -150,56 +137,6 @@ export function setConfigByApi() {
  * @param {Array} keys
  * @param {string} [requester='unspecified application code']
  */
-
-function _setConfigByApi() {
-  _setConfigByApi = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var apiConfig, apiService, url, _yield$apiService$get, data;
-
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            apiConfig = {
-              headers: {
-                accept: 'application/json'
-              }
-            };
-            _context.prev = 1;
-            _context.next = 4;
-            return configureCache();
-
-          case 4:
-            apiService = _context.sent;
-            url = getConfig().MFE_CONFIG_API_URL;
-            _context.next = 8;
-            return apiService.get(url, apiConfig);
-
-          case 8:
-            _yield$apiService$get = _context.sent;
-            data = _yield$apiService$get.data;
-            mergeConfig(data);
-            _context.next = 17;
-            break;
-
-          case 13:
-            _context.prev = 13;
-            _context.t0 = _context["catch"](1);
-            // eslint-disable-next-line no-console
-            console.error('Error with config API', _context.t0.message);
-            setConfig({
-              BASE_URL: "".concat(window.location.host),
-              LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
-            });
-
-          case 17:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[1, 13]]);
-  }));
-  return _setConfigByApi.apply(this, arguments);
-}
 
 export function ensureConfig(keys) {
   var requester = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'unspecified application code';

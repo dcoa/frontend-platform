@@ -77,15 +77,15 @@ export default function AppProvider(_ref) {
   useAppEvent(LOCALE_CHANGED, function () {
     setLocale(getLocale());
   });
-  return /*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(AppContext.Provider, {
+  return /*#__PURE__*/React.createElement(IntlProvider, {
+    locale: locale,
+    messages: getMessages()
+  }, /*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(AppContext.Provider, {
     value: {
       authenticatedUser: authenticatedUser,
       config: config,
       locale: locale
     }
-  }, /*#__PURE__*/React.createElement(IntlProvider, {
-    locale: locale,
-    messages: getMessages()
   }, /*#__PURE__*/React.createElement(OptionalReduxProvider, {
     store: store
   }, /*#__PURE__*/React.createElement(Router, {

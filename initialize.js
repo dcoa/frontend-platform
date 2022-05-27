@@ -57,12 +57,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { publish } from './pubSub'; // eslint-disable-next-line import/no-cycle
 
-import { getConfig, setConfigByApi } from './config';
+import { getConfig, mergeConfig, setConfig } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
 import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
+import configureCache from './auth/LocalForageCache';
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
@@ -121,7 +122,9 @@ export function auth(_x2, _x3) {
   return _auth.apply(this, arguments);
 }
 /*
- * Make a runtime site configuration
+ * Set or overrides configuration through an API.
+ * This method allows runtime configuration.
+ * Set a basic configuration when an error happen and allow initError.
  */
 
 function _auth() {
@@ -178,19 +181,50 @@ export function runtimeConfig() {
 
 function _runtimeConfig() {
   _runtimeConfig = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+    var apiConfig, apiService, url, _yield$apiService$get, data;
+
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            _context4.next = 2;
-            return setConfigByApi();
+            apiConfig = {
+              headers: {
+                accept: 'application/json'
+              }
+            };
+            _context4.prev = 1;
+            _context4.next = 4;
+            return configureCache();
 
-          case 2:
+          case 4:
+            apiService = _context4.sent;
+            url = getConfig().MFE_CONFIG_API_URL;
+            _context4.next = 8;
+            return apiService.get(url, apiConfig);
+
+          case 8:
+            _yield$apiService$get = _context4.sent;
+            data = _yield$apiService$get.data;
+            mergeConfig(data);
+            _context4.next = 17;
+            break;
+
+          case 13:
+            _context4.prev = 13;
+            _context4.t0 = _context4["catch"](1);
+            // eslint-disable-next-line no-console
+            console.error('Error with config API', _context4.t0.message);
+            setConfig({
+              BASE_URL: "".concat(window.location.host),
+              LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
+            });
+
+          case 17:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4);
+    }, _callee4, null, [[1, 13]]);
   }));
   return _runtimeConfig.apply(this, arguments);
 }
@@ -252,7 +286,6 @@ function applyOverrideHandlers(overrides) {
 
   return _objectSpread({
     pubSub: noOp,
-    runtimeConfig: runtimeConfig,
     config: noOp,
     logging: noOp,
     auth: auth,
@@ -293,6 +326,7 @@ function applyOverrideHandlers(overrides) {
  * to use.
  * @param {*} [options.analyticsService=SegmentAnalyticsService] The `AnalyticsService`
  * implementation to use.
+ * @param {*} [options.authMiddleware=[]] An array of middleware to apply to http clients in the auth service.
  * @param {*} [options.requireAuthenticatedUser=false] If true, turns on automatic login
  * redirection for unauthenticated users.  Defaults to false, meaning that by default the
  * application will allow anonymous/unauthenticated sessions.
@@ -315,13 +349,13 @@ export function initialize(_x4) {
 
 function _initialize() {
   _initialize = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(_ref2) {
-    var _ref2$loggingService, loggingService, _ref2$analyticsServic, analyticsService, _ref2$authService, authService, _ref2$requireAuthenti, requireUser, _ref2$hydrateAuthenti, hydrateUser, messages, _ref2$handlers, overrideHandlers, handlers;
+    var _ref2$loggingService, loggingService, _ref2$analyticsServic, analyticsService, _ref2$authService, authService, _ref2$authMiddleware, authMiddleware, _ref2$requireAuthenti, requireUser, _ref2$hydrateAuthenti, hydrateUser, messages, _ref2$handlers, overrideHandlers, handlers;
 
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            _ref2$loggingService = _ref2.loggingService, loggingService = _ref2$loggingService === void 0 ? NewRelicLoggingService : _ref2$loggingService, _ref2$analyticsServic = _ref2.analyticsService, analyticsService = _ref2$analyticsServic === void 0 ? SegmentAnalyticsService : _ref2$analyticsServic, _ref2$authService = _ref2.authService, authService = _ref2$authService === void 0 ? AxiosJwtAuthService : _ref2$authService, _ref2$requireAuthenti = _ref2.requireAuthenticatedUser, requireUser = _ref2$requireAuthenti === void 0 ? false : _ref2$requireAuthenti, _ref2$hydrateAuthenti = _ref2.hydrateAuthenticatedUser, hydrateUser = _ref2$hydrateAuthenti === void 0 ? false : _ref2$hydrateAuthenti, messages = _ref2.messages, _ref2$handlers = _ref2.handlers, overrideHandlers = _ref2$handlers === void 0 ? {} : _ref2$handlers;
+            _ref2$loggingService = _ref2.loggingService, loggingService = _ref2$loggingService === void 0 ? NewRelicLoggingService : _ref2$loggingService, _ref2$analyticsServic = _ref2.analyticsService, analyticsService = _ref2$analyticsServic === void 0 ? SegmentAnalyticsService : _ref2$analyticsServic, _ref2$authService = _ref2.authService, authService = _ref2$authService === void 0 ? AxiosJwtAuthService : _ref2$authService, _ref2$authMiddleware = _ref2.authMiddleware, authMiddleware = _ref2$authMiddleware === void 0 ? [] : _ref2$authMiddleware, _ref2$requireAuthenti = _ref2.requireAuthenticatedUser, requireUser = _ref2$requireAuthenti === void 0 ? false : _ref2$requireAuthenti, _ref2$hydrateAuthenti = _ref2.hydrateAuthenticatedUser, hydrateUser = _ref2$hydrateAuthenti === void 0 ? false : _ref2$hydrateAuthenti, messages = _ref2.messages, _ref2$handlers = _ref2.handlers, overrideHandlers = _ref2$handlers === void 0 ? {} : _ref2$handlers;
             handlers = applyOverrideHandlers(overrideHandlers);
             _context6.prev = 2;
             _context6.next = 5;
@@ -336,7 +370,7 @@ function _initialize() {
             }
 
             _context6.next = 9;
-            return handlers.runtimeConfig();
+            return runtimeConfig();
 
           case 9:
             _context6.next = 13;
@@ -360,7 +394,8 @@ function _initialize() {
 
             configureAuth(authService, {
               loggingService: getLoggingService(),
-              config: getConfig()
+              config: getConfig(),
+              middleware: authMiddleware
             });
             _context6.next = 21;
             return handlers.auth(requireUser, hydrateUser);
