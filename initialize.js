@@ -64,6 +64,7 @@ import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthentic
 import { configure as configureI18n } from './i18n';
 import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
 import configureCache from './auth/LocalForageCache';
+import { parseUrlQueryParams } from './utils';
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
@@ -124,7 +125,7 @@ export function auth(_x2, _x3) {
 /*
  * Set or overrides configuration through an API.
  * This method allows runtime configuration.
- * Set a basic configuration when an error happen and allow initError.
+ * Set a basic configuration when an error happen and allow initError and display the ErrorPage.
  */
 
 function _auth() {
@@ -187,18 +188,21 @@ function _runtimeConfig() {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
+            _context4.prev = 0;
             apiConfig = {
               headers: {
                 accept: 'application/json'
               }
             };
-            _context4.prev = 1;
             _context4.next = 4;
             return configureCache();
 
           case 4:
             apiService = _context4.sent;
-            url = getConfig().MFE_CONFIG_API_URL;
+            url = parseUrlQueryParams(getConfig().MFE_CONFIG_API_URL, [{
+              name: 'mfe',
+              value: getConfig().PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]
+            }]);
             _context4.next = 8;
             return apiService.get(url, apiConfig);
 
@@ -211,12 +215,11 @@ function _runtimeConfig() {
 
           case 13:
             _context4.prev = 13;
-            _context4.t0 = _context4["catch"](1);
+            _context4.t0 = _context4["catch"](0);
             // eslint-disable-next-line no-console
             console.error('Error with config API', _context4.t0.message);
             setConfig({
-              BASE_URL: "".concat(window.location.host),
-              LANGUAGE_PREFERENCE_COOKIE_NAME: 'openedx-language-preference'
+              BASE_URL: window.location.host
             });
 
           case 17:
@@ -224,7 +227,7 @@ function _runtimeConfig() {
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[1, 13]]);
+    }, _callee4, null, [[0, 13]]);
   }));
   return _runtimeConfig.apply(this, arguments);
 }
