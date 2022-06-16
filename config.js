@@ -66,7 +66,8 @@ var config = {
   LOGO_TRADEMARK_URL: process.env.LOGO_TRADEMARK_URL,
   LOGO_WHITE_URL: process.env.LOGO_WHITE_URL,
   FAVICON_URL: process.env.FAVICON_URL,
-  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL
+  MFE_CONFIG_API_URL: process.env.MFE_CONFIG_API_URL,
+  APP_ID: process.env.APP_ID
 };
 /**
  * Getter for the application configuration document.  This is synchronous and merely returns a
@@ -194,5 +195,6 @@ export function ensureConfig(keys) {
  * @property {string} LOGO_WHITE_URL
  * @property {string} FAVICON_URL
  * @property {string} MFE_CONFIG_API_URL
+ * @property {string} APP_ID
  */
 //# sourceMappingURL=config.js.map

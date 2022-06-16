@@ -57,14 +57,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 import { createBrowserHistory, createMemoryHistory } from 'history';
 import { publish } from './pubSub'; // eslint-disable-next-line import/no-cycle
 
-import { getConfig, mergeConfig, setConfig } from './config';
+import { getConfig, mergeConfig } from './config';
 import { configure as configureLogging, getLoggingService, NewRelicLoggingService, logError } from './logging';
 import { configure as configureAnalytics, SegmentAnalyticsService, identifyAnonymousUser, identifyAuthenticatedUser } from './analytics';
 import { getAuthenticatedHttpClient, configure as configureAuth, ensureAuthenticatedUser, fetchAuthenticatedUser, hydrateAuthenticatedUser, getAuthenticatedUser, AxiosJwtAuthService } from './auth';
 import { configure as configureI18n } from './i18n';
 import { APP_PUBSUB_INITIALIZED, APP_CONFIG_INITIALIZED, APP_AUTH_INITIALIZED, APP_I18N_INITIALIZED, APP_LOGGING_INITIALIZED, APP_ANALYTICS_INITIALIZED, APP_READY, APP_INIT_ERROR } from './constants';
 import configureCache from './auth/LocalForageCache';
-import { parseUrlQueryParams } from './utils';
 /**
  * A browser history or memory history object created by the [history](https://github.com/ReactTraining/history)
  * package.  Applications are encouraged to use this history object, rather than creating their own,
@@ -182,52 +181,57 @@ export function runtimeConfig() {
 
 function _runtimeConfig() {
   _runtimeConfig = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var apiConfig, apiService, url, _yield$apiService$get, data;
+    var _getConfig, MFE_CONFIG_API_URL, APP_ID, apiConfig, apiService, params, url, _yield$apiService$get, data;
 
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.prev = 0;
+            _getConfig = getConfig(), MFE_CONFIG_API_URL = _getConfig.MFE_CONFIG_API_URL, APP_ID = _getConfig.APP_ID;
+
+            if (!MFE_CONFIG_API_URL) {
+              _context4.next = 15;
+              break;
+            }
+
             apiConfig = {
               headers: {
                 accept: 'application/json'
               }
             };
-            _context4.next = 4;
+            _context4.next = 6;
             return configureCache();
 
-          case 4:
+          case 6:
             apiService = _context4.sent;
-            url = parseUrlQueryParams(getConfig().MFE_CONFIG_API_URL, [{
-              name: 'mfe',
-              value: getConfig().PUBLIC_PATH.slice(1, -1) || window.location.host.split('.')[0]
-            }]);
-            _context4.next = 8;
+            params = new URLSearchParams();
+            params.append('mfe', APP_ID);
+            url = "".concat(MFE_CONFIG_API_URL, "?").concat(params.toString());
+            _context4.next = 12;
             return apiService.get(url, apiConfig);
 
-          case 8:
+          case 12:
             _yield$apiService$get = _context4.sent;
             data = _yield$apiService$get.data;
             mergeConfig(data);
-            _context4.next = 17;
+
+          case 15:
+            _context4.next = 20;
             break;
 
-          case 13:
-            _context4.prev = 13;
+          case 17:
+            _context4.prev = 17;
             _context4.t0 = _context4["catch"](0);
             // eslint-disable-next-line no-console
             console.error('Error with config API', _context4.t0.message);
-            setConfig({
-              BASE_URL: window.location.host
-            });
 
-          case 17:
+          case 20:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 13]]);
+    }, _callee4, null, [[0, 17]]);
   }));
   return _runtimeConfig.apply(this, arguments);
 }
@@ -367,32 +371,23 @@ function _initialize() {
           case 5:
             publish(APP_PUBSUB_INITIALIZED); // Configuration
 
-            if (!getConfig().MFE_CONFIG_API_URL) {
-              _context6.next = 11;
-              break;
-            }
-
-            _context6.next = 9;
-            return runtimeConfig();
-
-          case 9:
-            _context6.next = 13;
-            break;
-
-          case 11:
-            _context6.next = 13;
+            _context6.next = 8;
             return handlers.config();
 
-          case 13:
+          case 8:
+            _context6.next = 10;
+            return runtimeConfig();
+
+          case 10:
             publish(APP_CONFIG_INITIALIZED); // Logging
 
             configureLogging(loggingService, {
               config: getConfig()
             });
-            _context6.next = 17;
+            _context6.next = 14;
             return handlers.logging();
 
-          case 17:
+          case 14:
             publish(APP_LOGGING_INITIALIZED); // Authentication
 
             configureAuth(authService, {
@@ -400,10 +395,10 @@ function _initialize() {
               config: getConfig(),
               middleware: authMiddleware
             });
-            _context6.next = 21;
+            _context6.next = 18;
             return handlers.auth(requireUser, hydrateUser);
 
-          case 21:
+          case 18:
             publish(APP_AUTH_INITIALIZED); // Analytics
 
             configureAnalytics(analyticsService, {
@@ -411,10 +406,10 @@ function _initialize() {
               loggingService: getLoggingService(),
               httpClient: getAuthenticatedHttpClient()
             });
-            _context6.next = 25;
+            _context6.next = 22;
             return handlers.analytics();
 
-          case 25:
+          case 22:
             publish(APP_ANALYTICS_INITIALIZED); // Internationalization
 
             configureI18n({
@@ -422,41 +417,41 @@ function _initialize() {
               config: getConfig(),
               loggingService: getLoggingService()
             });
-            _context6.next = 29;
+            _context6.next = 26;
             return handlers.i18n();
 
-          case 29:
+          case 26:
             publish(APP_I18N_INITIALIZED); // Application Ready
 
-            _context6.next = 32;
+            _context6.next = 29;
             return handlers.ready();
 
-          case 32:
+          case 29:
             publish(APP_READY);
-            _context6.next = 41;
+            _context6.next = 38;
             break;
 
-          case 35:
-            _context6.prev = 35;
+          case 32:
+            _context6.prev = 32;
             _context6.t0 = _context6["catch"](2);
 
             if (_context6.t0.isRedirecting) {
-              _context6.next = 41;
+              _context6.next = 38;
               break;
             }
 
-            _context6.next = 40;
+            _context6.next = 37;
             return handlers.initError(_context6.t0);
 
-          case 40:
+          case 37:
             publish(APP_INIT_ERROR, _context6.t0);
 
-          case 41:
+          case 38:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[2, 35]]);
+    }, _callee6, null, [[2, 32]]);
   }));
   return _initialize.apply(this, arguments);
 }

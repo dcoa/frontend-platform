@@ -184,20 +184,4 @@ export function ensureDefinedConfig(object, requester) {
     }
   });
 }
-/**
- * This function helps to parse api query params
- *
- * @param {String} mainURI
- * @param {Array} queryParams Array with object with strings to set query name and value
- *  {name: '', value, ''}
- */
-
-export function parseUrlQueryParams(mainURI) {
-  var queryParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  var params = new URLSearchParams();
-  queryParams.forEach(function (queryObj) {
-    return params.append(queryObj.name, queryObj.value);
-  });
-  return "".concat(mainURI, "?").concat(params.toString());
-}
 //# sourceMappingURL=utils.js.map
