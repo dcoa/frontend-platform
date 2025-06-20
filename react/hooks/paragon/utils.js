@@ -1,3 +1,4 @@
+import { getConfig } from '../../../config';
 import { basename } from '../../../initialize';
 
 /**
@@ -17,7 +18,7 @@ export var removeExistingLinks = function removeExistingLinks(existingLinks) {
 */
 export var fallbackThemeUrl = function fallbackThemeUrl(url) {
   var _window$location;
-  var baseUrl = (_window$location = window.location) === null || _window$location === void 0 ? void 0 : _window$location.origin;
+  var baseUrl = getConfig().BASE_URL || ((_window$location = window.location) === null || _window$location === void 0 ? void 0 : _window$location.origin);
 
   // validates if the baseurl has the protocol to be interpreted correctly by the browser,
   // if is not present add '//' to use Protocol-relative URL

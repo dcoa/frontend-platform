@@ -1,5 +1,4 @@
-var _excluded = ["fileName"],
-  _excluded2 = ["fileName"];
+var _excluded = ["fileName"];
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -136,59 +135,35 @@ var useParagonThemeUrls = function useParagonThemeUrls() {
 
     // If we don't have  the core default or any theme variants, use the PARAGON_THEME
     if (!coreCss["default"] || isEmptyObject(themeVariantsCss) || isEmptyObject(defaultThemeVariants)) {
-      var _PARAGON_THEME3, _PARAGON_THEME4, _PARAGON_THEME5, _PARAGON_THEME6, _PARAGON_THEME7, _PARAGON_THEME8;
-      var localParagonCoreUrl = (_PARAGON_THEME3 = PARAGON_THEME) === null || _PARAGON_THEME3 === void 0 || (_PARAGON_THEME3 = _PARAGON_THEME3.paragon) === null || _PARAGON_THEME3 === void 0 || (_PARAGON_THEME3 = _PARAGON_THEME3.themeUrls) === null || _PARAGON_THEME3 === void 0 ? void 0 : _PARAGON_THEME3.core;
-      var localParagonThemeVariants = (_PARAGON_THEME4 = PARAGON_THEME) === null || _PARAGON_THEME4 === void 0 || (_PARAGON_THEME4 = _PARAGON_THEME4.paragon) === null || _PARAGON_THEME4 === void 0 || (_PARAGON_THEME4 = _PARAGON_THEME4.themeUrls) === null || _PARAGON_THEME4 === void 0 ? void 0 : _PARAGON_THEME4.variants;
-      var localParagonDefaultThemeVariants = (_PARAGON_THEME5 = PARAGON_THEME) === null || _PARAGON_THEME5 === void 0 || (_PARAGON_THEME5 = _PARAGON_THEME5.paragon) === null || _PARAGON_THEME5 === void 0 || (_PARAGON_THEME5 = _PARAGON_THEME5.themeUrls) === null || _PARAGON_THEME5 === void 0 ? void 0 : _PARAGON_THEME5.defaults;
-      var localBrandCoreUrl = (_PARAGON_THEME6 = PARAGON_THEME) === null || _PARAGON_THEME6 === void 0 || (_PARAGON_THEME6 = _PARAGON_THEME6.brand) === null || _PARAGON_THEME6 === void 0 || (_PARAGON_THEME6 = _PARAGON_THEME6.themeUrls) === null || _PARAGON_THEME6 === void 0 ? void 0 : _PARAGON_THEME6.core;
-      var localBrandThemeVariants = (_PARAGON_THEME7 = PARAGON_THEME) === null || _PARAGON_THEME7 === void 0 || (_PARAGON_THEME7 = _PARAGON_THEME7.brand) === null || _PARAGON_THEME7 === void 0 || (_PARAGON_THEME7 = _PARAGON_THEME7.themeUrls) === null || _PARAGON_THEME7 === void 0 ? void 0 : _PARAGON_THEME7.variants;
-      var localBrandDefaultThemeVariants = (_PARAGON_THEME8 = PARAGON_THEME) === null || _PARAGON_THEME8 === void 0 || (_PARAGON_THEME8 = _PARAGON_THEME8.brand) === null || _PARAGON_THEME8 === void 0 || (_PARAGON_THEME8 = _PARAGON_THEME8.themeUrls) === null || _PARAGON_THEME8 === void 0 ? void 0 : _PARAGON_THEME8.defaults;
-      if (isEmptyObject(localParagonCoreUrl) || isEmptyObject(localParagonThemeVariants)) {
+      var _PARAGON_THEME$parago, _PARAGON_THEME$parago2, _PARAGON_THEME$parago3;
+      var localCoreUrl = (_PARAGON_THEME$parago = PARAGON_THEME.paragon) === null || _PARAGON_THEME$parago === void 0 || (_PARAGON_THEME$parago = _PARAGON_THEME$parago.themeUrls) === null || _PARAGON_THEME$parago === void 0 ? void 0 : _PARAGON_THEME$parago.core;
+      var localThemeVariants = (_PARAGON_THEME$parago2 = PARAGON_THEME.paragon) === null || _PARAGON_THEME$parago2 === void 0 || (_PARAGON_THEME$parago2 = _PARAGON_THEME$parago2.themeUrls) === null || _PARAGON_THEME$parago2 === void 0 ? void 0 : _PARAGON_THEME$parago2.variants;
+      var localDefaultThemeVariants = (_PARAGON_THEME$parago3 = PARAGON_THEME.paragon) === null || _PARAGON_THEME$parago3 === void 0 || (_PARAGON_THEME$parago3 = _PARAGON_THEME$parago3.themeUrls) === null || _PARAGON_THEME$parago3 === void 0 ? void 0 : _PARAGON_THEME$parago3.defaults;
+      if (isEmptyObject(localCoreUrl) || isEmptyObject(localThemeVariants)) {
         return undefined;
       }
       if (!coreCss["default"]) {
-        coreCss["default"] = fallbackThemeUrl(localParagonCoreUrl === null || localParagonCoreUrl === void 0 ? void 0 : localParagonCoreUrl.fileName);
+        coreCss["default"] = fallbackThemeUrl(localCoreUrl === null || localCoreUrl === void 0 ? void 0 : localCoreUrl.fileName);
       }
-      if (!coreCss.brandOverride && !isEmptyObject(localBrandCoreUrl)) {
-        coreCss.brandOverride = fallbackThemeUrl(localBrandCoreUrl === null || localBrandCoreUrl === void 0 ? void 0 : localBrandCoreUrl.fileName);
-      }
-      Object.entries(localParagonThemeVariants).forEach(function (_ref5) {
-        var _themeVariantsCss$the;
-        var _ref6 = _slicedToArray(_ref5, 2),
-          themeVariant = _ref6[0],
-          _ref4 = _ref6[1];
-        var fileName = _ref4.fileName,
-          rest = _objectWithoutProperties(_ref4, _excluded);
-        if (!((_themeVariantsCss$the = themeVariantsCss[themeVariant]) !== null && _themeVariantsCss$the !== void 0 && (_themeVariantsCss$the = _themeVariantsCss$the.urls) !== null && _themeVariantsCss$the !== void 0 && _themeVariantsCss$the["default"])) {
-          var _themeVariantsCss$the2;
+      if (isEmptyObject(themeVariantsCss)) {
+        Object.entries(localThemeVariants).forEach(function (_ref5) {
+          var _ref6 = _slicedToArray(_ref5, 2),
+            themeVariant = _ref6[0],
+            _ref4 = _ref6[1];
+          var fileName = _ref4.fileName,
+            rest = _objectWithoutProperties(_ref4, _excluded);
           themeVariantsCss[themeVariant] = {
-            urls: _objectSpread(_objectSpread({}, (_themeVariantsCss$the2 = themeVariantsCss[themeVariant]) === null || _themeVariantsCss$the2 === void 0 ? void 0 : _themeVariantsCss$the2.urls), {}, {
+            urls: _objectSpread({
               "default": fallbackThemeUrl(fileName)
             }, rest.urls)
           };
-        }
-      });
-      Object.entries(localBrandThemeVariants).forEach(function (_ref8) {
-        var _themeVariantsCss$the3;
-        var _ref9 = _slicedToArray(_ref8, 2),
-          themeVariant = _ref9[0],
-          _ref7 = _ref9[1];
-        var fileName = _ref7.fileName,
-          rest = _objectWithoutProperties(_ref7, _excluded2);
-        if (!((_themeVariantsCss$the3 = themeVariantsCss[themeVariant]) !== null && _themeVariantsCss$the3 !== void 0 && (_themeVariantsCss$the3 = _themeVariantsCss$the3.urls) !== null && _themeVariantsCss$the3 !== void 0 && _themeVariantsCss$the3.brandOverride)) {
-          var _themeVariantsCss$the4;
-          themeVariantsCss[themeVariant] = {
-            urls: _objectSpread(_objectSpread({}, (_themeVariantsCss$the4 = themeVariantsCss[themeVariant]) === null || _themeVariantsCss$the4 === void 0 ? void 0 : _themeVariantsCss$the4.urls), {}, {
-              brandOverride: fallbackThemeUrl(fileName)
-            }, rest.urls)
-          };
-        }
-      });
+        });
+      }
       return {
         core: {
           urls: coreCss
         },
-        defaults: defaultThemeVariants || _objectSpread(_objectSpread({}, localParagonDefaultThemeVariants), localBrandDefaultThemeVariants),
+        defaults: defaultThemeVariants || localDefaultThemeVariants,
         variants: themeVariantsCss
       };
     }

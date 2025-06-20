@@ -88,4 +88,5 @@ export { intlShape, configure, getPrimaryLanguageSubtag, getLocale, getMessages,
 export { default as injectIntl } from './injectIntlWithShim';
 export { getCountryList, getCountryMessages } from './countries';
 export { getLanguageList, getLanguageMessages } from './languages';
+export { changeUserSessionLanguage } from './languageManager';
 //# sourceMappingURL=index.js.map
