@@ -304,4 +304,9 @@ export function configure(options) {
   }
   handleRtl();
 }
+export function getSupportedLocaleList() {
+  var languages = Object.keys(messages);
+  languages = languages.includes('en') ? languages : languages.concat(['en']);
+  return languages.sort();
+}
 //# sourceMappingURL=lib.js.map
